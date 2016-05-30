@@ -2,14 +2,24 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class Janela {
+public class JanelaUrna {
+    private static JanelaUrna instancia;
+
     private JFrame mainFrame;
     private JLabel screenLabel;
     private JPanel controlPanel;
     private TelaControle telaControle;
+    private boolean visibility;
 
-    public Janela(){
+    public JanelaUrna(){
         prepareGUI();
+    }
+
+    public static synchronized JanelaUrna getInstance() {
+        if (instancia == null) {
+            instancia = new JanelaUrna();
+        }
+        return instancia;
     }
 
     private void prepareGUI(){
@@ -20,7 +30,10 @@ public class Janela {
 
         buildScreen();
         telaControle = new TelaControle(mainFrame);
-        mainFrame.setVisible(true);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        mainFrame.setLocation(dim.width/2-mainFrame.getSize().width/2, dim.height/2-mainFrame.getSize().height/2);
+        visibility = false;
+        mainFrame.setVisible(false);
     }
 
     private void buildScreen() {
@@ -34,5 +47,14 @@ public class Janela {
         c.gridy = 0;
         mainFrame.add(screenLabel, c);
         screenLabel.setText("Buttons Section");
+    }
+
+    private void toggleVisibility() {
+        visibility = !visibility;
+        mainFrame.setVisible(visibility);
+    }
+
+    public void iniciarVoto() {
+        toggleVisibility();
     }
 }
