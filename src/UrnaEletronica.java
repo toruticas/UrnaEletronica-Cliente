@@ -1,5 +1,7 @@
 public class UrnaEletronica {
     public static void main(String[] args){
-        Janela janela = new Janela();
+        Requisicao requisicao = Requisicao.getInstance(args);
+        JanelaUrna janelaUrna = JanelaUrna.getInstance();
+        JanelaMesario janelaMesario = JanelaMesario.getInstance();
     }
 }
