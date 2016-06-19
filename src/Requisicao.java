@@ -10,20 +10,20 @@ public class Requisicao {
     protected PrintWriter outputStream;
     protected BufferedReader inputStream;
     protected Colegiado colegiado;
-    protected String hostName;
+    protected InetAddress hostName;
     protected int portNumber;
 
     Requisicao(String[] args) {
         if (args.length != 2) {
             System.err.println(
-                "Usage: java -jar UrnaEletronica.jar <host name> <port number>");
+                "Usage: java -jar UrnaEletronica.jar http://<host name> <port number>");
             System.exit(1);
         }
 
-        hostName = args[0];
-        portNumber = Integer.parseInt(args[1]);
-
         try {
+            hostName = InetAddress.getByName(new URL(args[0]).getHost());
+            portNumber = Integer.parseInt(args[1]);
+
             echoSocket = new Socket(hostName, portNumber);
             outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
             inputStream = new BufferedReader(
