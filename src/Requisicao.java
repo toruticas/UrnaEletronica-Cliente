@@ -76,10 +76,22 @@ public class Requisicao {
 
     public void finalizarVotacao() {
         try {
-            // outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
-            // inputStream = new BufferedReader(
-            //     new InputStreamReader(echoSocket.getInputStream()));
-            outputStream.println("888\n13|10\n45|2\n");
+            outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
+            inputStream = new BufferedReader(
+                new InputStreamReader(echoSocket.getInputStream()));
+
+            String out = new String("888\n");
+            for (Candidato candidato: colegiado.getCandidatos())
+                out += String.format(
+                    "%d|%d\n",
+                    candidato.getCodigo(), candidato.getNumeroVotos());
+
+            System.out.println(out);
+            Colegiado colegiado = Colegiado.getInstance();
+            out += String.format("%d|%d\n", Colegiado.VOTO_BRANCO, colegiado.getBrancos());
+            out += String.format("%d|%d\n", Colegiado.VOTO_NULO, colegiado.getNulos());
+
+            outputStream.println(out);
             System.out.println(inputStream.readLine());
             System.exit(1);
             echoSocket.close();
@@ -91,11 +103,5 @@ public class Requisicao {
                 hostName);
             System.exit(1);
         }
-    }
-
-    public void readResponse() {
-        // for ( String val : firstResponse ) {
-        //     System.out.println(val);
-        // }
     }
 }

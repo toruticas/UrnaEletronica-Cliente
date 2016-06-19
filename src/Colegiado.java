@@ -60,6 +60,14 @@ public class Colegiado {
         return candidatos.get(codigo);
     }
 
+    public int getBrancos() {
+        return brancos;
+    }
+
+    public int getNulos() {
+        return nulos;
+    }
+
     public void computarVoto(Integer codigo) {
         if (codigo == VOTO_BRANCO) {
             brancos += 1;
