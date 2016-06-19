@@ -78,9 +78,16 @@ public class TelaControle {
     private class ButtonClickListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
-            if( command.equals( "OK" ))  {
-                System.out.println("Ok Button");
-                // statusLabel.setText("Ok Button clicked.");
+            Colegiado colegiado = Colegiado.getInstance();
+
+            if (command == "Confirma") {
+                System.out.println("XXX: Implement Confirma");
+            } else if (command == "Branco") {
+                colegiado.computarVoto(Colegiado.VOTO_BRANCO);
+            } else if (command == "Corrige") {
+                System.out.println("XXX: Implement Corrige");
+            } else {
+                System.out.println("XXX: Implement Else");
             }
         }
     }
