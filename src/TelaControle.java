@@ -7,8 +7,10 @@ public class TelaControle {
     private JPanel controlPanel;
     private JPanel optionsPanel;
     private JPanel actionsPanel;
+    private JLabel codigoLabel;
     private JButton options[];
     private JButton actions[];
+    private String codigo;
 
     TelaControle(JFrame frame) {
         this.mainFrame = frame;
@@ -17,8 +19,9 @@ public class TelaControle {
         options = new JButton[10];
         actions = new JButton[3];
         controlPanel = new JPanel();
+        codigo = new String("");
 
-        controlPanel.setLayout(new GridLayout(2,1));
+        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
         GridBagConstraints c = new GridBagConstraints();
         c.ipadx = 0;
         c.weightx = 0.5;
@@ -27,8 +30,17 @@ public class TelaControle {
         c.gridy = 0;
         mainFrame.add(controlPanel, c);
 
+        buildCodigo();
         buildOptions();
         buildActions();
+
+        updateCodigo();
+    }
+
+    private void buildCodigo() {
+        // FIXME: Make this look betteron the UI
+        codigoLabel = new JLabel("", JLabel.CENTER);
+        controlPanel.add(codigoLabel);
     }
 
     private void buildOptions() {
@@ -75,19 +87,31 @@ public class TelaControle {
         actionsPanel.add(actions[id], c);
     }
 
+    private void updateCodigo() {
+        codigoLabel.setText(codigo.equals("")? " ": codigo);
+    }
+
     private class ButtonClickListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
             Colegiado colegiado = Colegiado.getInstance();
 
             if (command == "Confirma") {
-                System.out.println("XXX: Implement Confirma");
+                if (codigo.equals("")) {
+                    colegiado.computarVoto(Colegiado.VOTO_NULO);
+                } else {
+                    colegiado.computarVoto(Integer.parseInt(codigo));
+                }
             } else if (command == "Branco") {
                 colegiado.computarVoto(Colegiado.VOTO_BRANCO);
             } else if (command == "Corrige") {
-                System.out.println("XXX: Implement Corrige");
+                if (codigo.length() > 0) {
+                    codigo = codigo.substring(0, codigo.length() - 1);
+                }
+                updateCodigo();
             } else {
-                System.out.println("XXX: Implement Else");
+                codigo += command;
+                updateCodigo();
             }
         }
     }

@@ -43,6 +43,9 @@ public class Colegiado {
             );
         }
         System.out.print("-----------------------------------------------\n");
+        System.out.format("| BRANCOS                             | %5d |\n", brancos);
+        System.out.format("| NULOS                               | %5d |\n", nulos	);
+        System.out.print("-----------------------------------------------\n");
     }
 
     public void putCandidato(Candidato candidato) {
@@ -68,5 +71,6 @@ public class Colegiado {
             else
                 candidato.adicionarVoto();
         }
+        printarCandidatos();
     }
 }
