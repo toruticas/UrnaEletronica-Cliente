@@ -76,9 +76,10 @@ public class Requisicao {
 
     public void finalizarVotacao() {
         try {
-            outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
+            Socket socket = new Socket(hostName, portNumber);
+            outputStream = new PrintWriter(socket.getOutputStream(), true);
             inputStream = new BufferedReader(
-                new InputStreamReader(echoSocket.getInputStream()));
+                new InputStreamReader(socket.getInputStream()));
 
             String out = new String("888\n");
             for (Candidato candidato: colegiado.getCandidatos())
@@ -94,7 +95,7 @@ public class Requisicao {
             outputStream.println(out);
             System.out.println(inputStream.readLine());
             System.exit(1);
-            echoSocket.close();
+            socket.close();
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
