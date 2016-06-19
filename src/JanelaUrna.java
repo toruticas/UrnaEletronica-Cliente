@@ -46,7 +46,15 @@ public class JanelaUrna {
         c.gridx = 0;
         c.gridy = 0;
         mainFrame.add(screenLabel, c);
-        screenLabel.setText("Buttons Section");
+
+        Colegiado colegiado = Colegiado.getInstance();
+        String text = new String();
+        for (Candidato candidato: colegiado.getCandidatos() ) {
+            text += String.format(
+                "%d: [%s] %s<br>",
+                candidato.getCodigo(), candidato.getPartido(), candidato.getNome());
+        }
+        screenLabel.setText("<html>" + text + "</html>");
     }
 
     private void toggleVisibility() {

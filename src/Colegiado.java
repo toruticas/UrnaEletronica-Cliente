@@ -1,5 +1,6 @@
 // package com.SingleTon;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +25,8 @@ public class Colegiado {
         return instancia;
     }
 
-    public String listarCandidatos() {
-        Candidato candidato = null;
-        String string = "";
-        for ( Integer codigo : candidatos.keySet() ) {
-            string += candidatos.get(codigo).toString() + "\n";
-        }
-        return string;
+    public Collection<Candidato> getCandidatos() {
+        return candidatos.values();
     }
 
     public void printarCandidatos() {
