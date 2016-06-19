@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observer;
 
 public class JanelaUrna {
     private static JanelaUrna instancia;
@@ -57,12 +58,17 @@ public class JanelaUrna {
         screenLabel.setText("<html>" + text + "</html>");
     }
 
+    public void listenVoteComplete(Observer observer) {
+        telaControle.addObserver(observer);
+    }
+
     private void toggleVisibility() {
         visibility = !visibility;
         mainFrame.setVisible(visibility);
     }
 
-    public void iniciarVoto() {
+    public void toggleVoto() {
         toggleVisibility();
+        telaControle.resetGUI();
     }
 }

@@ -1,8 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observable;
 
-public class TelaControle {
+public class TelaControle extends Observable {
     private JFrame mainFrame;
     private JPanel controlPanel;
     private JPanel optionsPanel;
@@ -13,13 +14,14 @@ public class TelaControle {
     private String codigo;
 
     TelaControle(JFrame frame) {
+        super();
+
         this.mainFrame = frame;
         optionsPanel = new JPanel();
         actionsPanel = new JPanel();
         options = new JButton[10];
         actions = new JButton[3];
         controlPanel = new JPanel();
-        codigo = new String("");
 
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
         GridBagConstraints c = new GridBagConstraints();
@@ -34,6 +36,11 @@ public class TelaControle {
         buildOptions();
         buildActions();
 
+        resetGUI();
+    }
+
+    public void resetGUI() {
+        codigo = new String("");
         updateCodigo();
     }
 
@@ -102,8 +109,12 @@ public class TelaControle {
                 } else {
                     colegiado.computarVoto(Integer.parseInt(codigo));
                 }
+                setChanged();
+                notifyObservers();
             } else if (command == "Branco") {
                 colegiado.computarVoto(Colegiado.VOTO_BRANCO);
+                setChanged();
+                notifyObservers();
             } else if (command == "Corrige") {
                 if (codigo.length() > 0) {
                     codigo = codigo.substring(0, codigo.length() - 1);
