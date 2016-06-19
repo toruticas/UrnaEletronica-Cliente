@@ -16,7 +16,7 @@ public class Requisicao {
     Requisicao(String[] args) {
         if (args.length != 2) {
             System.err.println(
-                "Usage: java EchoClient <host name> <port number>");
+                "Usage: java -jar UrnaEletronica.jar <host name> <port number>");
             System.exit(1);
         }
 
