@@ -16,12 +16,15 @@ public class Requisicao {
     Requisicao(String[] args) {
         if (args.length != 2) {
             System.err.println(
-                "Usage: java -jar UrnaEletronica.jar http://<host name> <port number>");
+                "Usage: java -jar UrnaEletronica.jar <host name> <port number>");
             System.exit(1);
         }
 
         try {
-            hostName = InetAddress.getByName(new URL(args[0]).getHost());
+            String url = args[0];
+            if (! url.startsWith("http"))
+                url = "http://" + url;
+            hostName = InetAddress.getByName(new URL(url).getHost());
             portNumber = Integer.parseInt(args[1]);
 
             echoSocket = new Socket(hostName, portNumber);
