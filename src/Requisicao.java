@@ -26,8 +26,10 @@ public class Requisicao {
 
             echoSocket = new Socket(hostName, portNumber);
             outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
+            // FIXME: Probably we should send the data as UTF-8, but it is
+            // being loaded as ISO-8859-1 from the xml
             inputStream = new BufferedReader(
-                new InputStreamReader(echoSocket.getInputStream()));
+                new InputStreamReader(echoSocket.getInputStream(), "ISO-8859-1"));
             outputStream.println("999");
             if ((inputStream.readLine()).equals("100") == true ) {
                 colegiado = Colegiado.getInstance();
