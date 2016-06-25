@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observer;
 
 public class JanelaUrna {
     private static JanelaUrna instancia;
@@ -46,7 +47,19 @@ public class JanelaUrna {
         c.gridx = 0;
         c.gridy = 0;
         mainFrame.add(screenLabel, c);
-        screenLabel.setText("Buttons Section");
+
+        Colegiado colegiado = Colegiado.getInstance();
+        String text = new String();
+        for (Candidato candidato: colegiado.getCandidatos() ) {
+            text += String.format(
+                "%d: [%s] %s<br>",
+                candidato.getCodigo(), candidato.getPartido(), candidato.getNome());
+        }
+        screenLabel.setText("<html>" + text + "</html>");
+    }
+
+    public void listenVoteComplete(Observer observer) {
+        telaControle.addObserver(observer);
     }
 
     private void toggleVisibility() {
@@ -54,7 +67,8 @@ public class JanelaUrna {
         mainFrame.setVisible(visibility);
     }
 
-    public void iniciarVoto() {
+    public void toggleVoto() {
         toggleVisibility();
+        telaControle.resetGUI();
     }
 }

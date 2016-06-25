@@ -1,16 +1,21 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observable;
 
-public class TelaControle {
+public class TelaControle extends Observable {
     private JFrame mainFrame;
     private JPanel controlPanel;
     private JPanel optionsPanel;
     private JPanel actionsPanel;
+    private JLabel codigoLabel;
     private JButton options[];
     private JButton actions[];
+    private String codigo;
 
     TelaControle(JFrame frame) {
+        super();
+
         this.mainFrame = frame;
         optionsPanel = new JPanel();
         actionsPanel = new JPanel();
@@ -18,7 +23,7 @@ public class TelaControle {
         actions = new JButton[3];
         controlPanel = new JPanel();
 
-        controlPanel.setLayout(new GridLayout(2,1));
+        controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
         GridBagConstraints c = new GridBagConstraints();
         c.ipadx = 0;
         c.weightx = 0.5;
@@ -27,8 +32,22 @@ public class TelaControle {
         c.gridy = 0;
         mainFrame.add(controlPanel, c);
 
+        buildCodigo();
         buildOptions();
         buildActions();
+
+        resetGUI();
+    }
+
+    public void resetGUI() {
+        codigo = new String("");
+        updateCodigo();
+    }
+
+    private void buildCodigo() {
+        // FIXME: Make this look betteron the UI
+        codigoLabel = new JLabel("", JLabel.CENTER);
+        controlPanel.add(codigoLabel);
     }
 
     private void buildOptions() {
@@ -75,12 +94,35 @@ public class TelaControle {
         actionsPanel.add(actions[id], c);
     }
 
+    private void updateCodigo() {
+        codigoLabel.setText(codigo.equals("")? " ": codigo);
+    }
+
     private class ButtonClickListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
-            if( command.equals( "OK" ))  {
-                System.out.println("Ok Button");
-                // statusLabel.setText("Ok Button clicked.");
+            Colegiado colegiado = Colegiado.getInstance();
+
+            if (command == "Confirma") {
+                if (codigo.equals("")) {
+                    colegiado.computarVoto(Colegiado.VOTO_NULO);
+                } else {
+                    colegiado.computarVoto(Integer.parseInt(codigo));
+                }
+                setChanged();
+                notifyObservers();
+            } else if (command == "Branco") {
+                colegiado.computarVoto(Colegiado.VOTO_BRANCO);
+                setChanged();
+                notifyObservers();
+            } else if (command == "Corrige") {
+                if (codigo.length() > 0) {
+                    codigo = codigo.substring(0, codigo.length() - 1);
+                }
+                updateCodigo();
+            } else {
+                codigo += command;
+                updateCodigo();
             }
         }
     }

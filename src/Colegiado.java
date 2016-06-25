@@ -1,12 +1,18 @@
 // package com.SingleTon;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 
 public class Colegiado {
     private static Colegiado instancia;
+    private Integer brancos = 0;
+    private Integer nulos = 0;
     protected Map<Integer,Candidato> candidatos;
+
+    public static int VOTO_BRANCO = 9999;
+    public static int VOTO_NULO = 9998;
 
     Colegiado() {
         candidatos = new HashMap<Integer,Candidato>();
@@ -19,13 +25,8 @@ public class Colegiado {
         return instancia;
     }
 
-    public String listarCandidatos() {
-        Candidato candidato = null;
-        String string = "";
-        for ( Integer codigo : candidatos.keySet() ) {
-            string += candidatos.get(codigo).toString() + "\n";
-        }
-        return string;
+    public Collection<Candidato> getCandidatos() {
+        return candidatos.values();
     }
 
     public void printarCandidatos() {
@@ -42,6 +43,9 @@ public class Colegiado {
             );
         }
         System.out.print("-----------------------------------------------\n");
+        System.out.format("| BRANCOS                             | %5d |\n", brancos);
+        System.out.format("| NULOS                               | %5d |\n", nulos	);
+        System.out.print("-----------------------------------------------\n");
     }
 
     public void putCandidato(Candidato candidato) {
@@ -56,8 +60,25 @@ public class Colegiado {
         return candidatos.get(codigo);
     }
 
+    public int getBrancos() {
+        return brancos;
+    }
+
+    public int getNulos() {
+        return nulos;
+    }
+
     public void computarVoto(Integer codigo) {
-        Candidato candidato = candidatos.get(codigo);
-        candidato.adicionarVoto();
+        if (codigo == VOTO_BRANCO) {
+            brancos += 1;
+        } else {
+            Candidato candidato = candidatos.get(codigo);
+            // An unknown candidate is a nule vote
+            if (candidato == null)
+                nulos += 1;
+            else
+                candidato.adicionarVoto();
+        }
+        printarCandidatos();
     }
 }

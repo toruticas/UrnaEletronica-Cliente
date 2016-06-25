@@ -10,24 +10,29 @@ public class Requisicao {
     protected PrintWriter outputStream;
     protected BufferedReader inputStream;
     protected Colegiado colegiado;
-    protected String hostName;
+    protected InetAddress hostName;
     protected int portNumber;
 
     Requisicao(String[] args) {
         if (args.length != 2) {
             System.err.println(
-                "Usage: java EchoClient <host name> <port number>");
+                "Usage: java -jar UrnaEletronica.jar <host name> <port number>");
             System.exit(1);
         }
 
-        hostName = args[0];
-        portNumber = Integer.parseInt(args[1]);
-
         try {
+            String url = args[0];
+            if (! url.startsWith("http"))
+                url = "http://" + url;
+            hostName = InetAddress.getByName(new URL(url).getHost());
+            portNumber = Integer.parseInt(args[1]);
+
             echoSocket = new Socket(hostName, portNumber);
             outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
+            // FIXME: Probably we should send the data as UTF-8, but it is
+            // being loaded as ISO-8859-1 from the xml
             inputStream = new BufferedReader(
-                new InputStreamReader(echoSocket.getInputStream()));
+                new InputStreamReader(echoSocket.getInputStream(), "ISO-8859-1"));
             outputStream.println("999");
             if ((inputStream.readLine()).equals("100") == true ) {
                 colegiado = Colegiado.getInstance();
@@ -76,13 +81,26 @@ public class Requisicao {
 
     public void finalizarVotacao() {
         try {
-            // outputStream = new PrintWriter(echoSocket.getOutputStream(), true);
-            // inputStream = new BufferedReader(
-            //     new InputStreamReader(echoSocket.getInputStream()));
-            outputStream.println("888\n13|10\n45|2\n");
+            Socket socket = new Socket(hostName, portNumber);
+            outputStream = new PrintWriter(socket.getOutputStream(), true);
+            inputStream = new BufferedReader(
+                new InputStreamReader(socket.getInputStream()));
+
+            String out = new String("888\n");
+            for (Candidato candidato: colegiado.getCandidatos())
+                out += String.format(
+                    "%d|%d\n",
+                    candidato.getCodigo(), candidato.getNumeroVotos());
+
+            System.out.println(out);
+            Colegiado colegiado = Colegiado.getInstance();
+            out += String.format("%d|%d\n", Colegiado.VOTO_BRANCO, colegiado.getBrancos());
+            out += String.format("%d|%d\n", Colegiado.VOTO_NULO, colegiado.getNulos());
+
+            outputStream.println(out);
             System.out.println(inputStream.readLine());
             System.exit(1);
-            echoSocket.close();
+            socket.close();
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host " + hostName);
             System.exit(1);
@@ -91,11 +109,5 @@ public class Requisicao {
                 hostName);
             System.exit(1);
         }
-    }
-
-    public void readResponse() {
-        // for ( String val : firstResponse ) {
-        //     System.out.println(val);
-        // }
     }
 }

@@ -1,8 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Observer;
+import java.util.Observable;
 
-public class JanelaMesario {
+public class JanelaMesario implements Observer {
     private static JanelaMesario instancia;
 
     private JFrame mainFrame;
@@ -23,6 +25,11 @@ public class JanelaMesario {
         return instancia;
     }
 
+    @Override
+    public void update(Observable o, Object arg) {
+        toggleVoto();
+    }
+
     private void prepareGUI(){
         mainFrame = new JFrame("Controle Urna Eletrônica");
         mainFrame.setSize(400,250);
@@ -34,6 +41,9 @@ public class JanelaMesario {
         mainFrame.setLocation(dim.width/2-mainFrame.getSize().width/2, dim.height/2-mainFrame.getSize().height/2);
         visibility = true;
         mainFrame.setVisible(true);
+
+        JanelaUrna janelaUrna = JanelaUrna.getInstance();
+        janelaUrna.listenVoteComplete(this);
     }
 
     private void buildScreen() {
@@ -53,17 +63,17 @@ public class JanelaMesario {
         mainFrame.setVisible(visibility);
     }
 
-    public void iniciarVoto() {
+    public void toggleVoto() {
         toggleVisibility();
         JanelaUrna janelaUrna = JanelaUrna.getInstance();
-        janelaUrna.iniciarVoto();
+        janelaUrna.toggleVoto();
     }
 
     private class ButtonClickListener implements ActionListener{
         public void actionPerformed(ActionEvent e) {
             String command = e.getActionCommand();
             if( command.equals( "1" ))  {
-                iniciarVoto();
+                toggleVoto();
             } else if( command.equals( "888" ))  {
                 Requisicao requisicao = Requisicao.getInstance();
                 requisicao.finalizarVotacao();
